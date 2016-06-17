@@ -45,10 +45,14 @@ class ImageResize extends \Slim\Middleware
         unset($this->options["mutator"]);
     }
 
-    public function call()
+    public function __invoke($request, $response, $next)
     {
-        $request  = $this->app->request;
-        $response = $this->app->response;
+        
+        // $scheme = $request->getUri()->getScheme();
+        $host = $request->getUri()->getHost();
+
+        // $request  = $this->app->request;
+        // $response = $this->app->response;
 
         $folder   = $request->getRootUri();
         $resource = $request->getResourceUri();
@@ -79,7 +83,7 @@ class ImageResize extends \Slim\Middleware
             $response->header("Content-type", $this->mutator->mime());
             $response->body($this->mutator->encode());
         } else {
-            $this->next->call();
+           return $next($request, $response);
         }
     }
 
